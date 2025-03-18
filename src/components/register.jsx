@@ -24,11 +24,15 @@ function Register() {
         navigate("/login");
       }
     } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+          "something went wrong! please try after sometime"
+      );
       console.log(err);
     }
   };
   return (
-    <div className="flex flex-col justify-center items-center h-full">
+    <div className="flex flex-col justify-center items-center h-full bg-[#251d45]">
       <div className=" bg-[#a18aff] p-5 w-[500px] h-[500px] flex flex-col justify-center rounded-xl gap-2 ">
         <h3 className="self-center text-xl text-white">Sign Up</h3>
         <form className="flex flex-col" onSubmit={registerUser}>
@@ -65,7 +69,7 @@ function Register() {
           >
             Sign Up
           </button>
-          <p className="self-center">
+          <p className="self-center pt-3">
             already have an account ?{" "}
             <Link to="/login" className="underline">
               Sign In
