@@ -3,12 +3,17 @@ import Login from "./components/login";
 import Home from "./components/home";
 import { ToastContainer } from "react-toastify";
 import Register from "./components/register";
+import AuthWrapper from "./components/authwrapper";
 
 function App() {
   const router = createBrowserRouter([
     {
       path: "/",
-      element: <Home></Home>,
+      element: (
+        <AuthWrapper>
+          <Home></Home>
+        </AuthWrapper>
+      ),
     },
     {
       path: "/login",

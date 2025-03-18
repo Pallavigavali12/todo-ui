@@ -6,28 +6,40 @@ import { toast } from "react-toastify";
 
 import { TiDelete } from "react-icons/ti";
 import api from "../api/api";
+import { useNavigate } from "react-router-dom";
 function Home() {
   const [todo, setTodo] = useState([]);
   const [value, setValue] = useState("");
   const [open, setOpen] = useState(false);
-
+  const [details, setDetails] = useState({});
+  const navigate = useNavigate();
   const addtodo = async (e) => {
-    e.preventDefault();
-    console.log(value);
-    const response = await api.post("http://localhost:3000/api/todos/addtodo", {
-      task: value,
-    });
-    if (response.status == 201) {
-      setValue("");
-      get_todolist();
-      setOpen(false);
-      toast.success("task added succesfully!");
+    try {
+      e.preventDefault();
+      console.log(value);
+      const response = await api.post(
+        "http://localhost:3000/api/todos/addtodo",
+        {
+          task: value,
+        }
+      );
+      if (response.status == 201) {
+        setValue("");
+        get_todolist();
+        setOpen(false);
+        toast.success("task added succesfully!");
+      }
+    } catch (err) {
+      console.log(err);
+      toast.error(
+        err?.response?.data?.message ||
+          "something went wrong! please try after sometime"
+      );
     }
   };
 
   const deletetodo = async (todo) => {
     try {
-      
       const response = await api.delete(
         `http://localhost:3000/api/todos/deletetodo/${todo._id}`
       );
@@ -38,6 +50,10 @@ function Home() {
       }
     } catch (err) {
       console.log(err);
+      toast.error(
+        err?.response?.data?.message ||
+          "something went wrong! please try after sometime"
+      );
     }
   };
 
@@ -48,6 +64,10 @@ function Home() {
       setTodo(response.data);
     } catch (err) {
       console.log(err);
+      toast.error(
+        err?.response?.data?.message ||
+          "something went wrong! please try after sometime"
+      );
     }
   };
 
@@ -64,17 +84,43 @@ function Home() {
       }
     } catch (err) {
       console.log(err);
+      toast.error(
+        err?.response?.data?.message ||
+          "something went wrong! please try after sometime"
+      );
     }
   };
   useEffect(() => {
+    const details = localStorage.getItem("user");
+    console.log(details);
+    if (details) {
+      setDetails(JSON.parse(details));
+    }
     get_todolist();
   }, []);
+
+  const onlogout = () => {
+    navigate("/login");
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
   return (
-    <div className="flex flex-col p-5 items-center  h-full">
+    <div className="flex flex-col p-5 items-center  h-full bg-[#251d45]">
       <div className="bg-[#a18aff] p-3 w-[600px] h-[650px] flex flex-col">
-        <div className="text-white font-bold text-2xl p-5">
-          <h2>ToDo List</h2>
-          <t3>Todays main focus</t3>
+        <div className="text-white font-bold text-2xl p-5 flex justify-between">
+          <div>
+            <h2>Welcome {details.name}</h2>
+            <h2>ToDo List</h2>
+            <t3>Todays main focus</t3>
+          </div>
+          <div>
+            <button
+              className="text-base bg-red-500 p-2 rounded-md"
+              onClick={onlogout}
+            >
+              logout
+            </button>
+          </div>
         </div>
         <div className="p-5 gap-3 flex flex-col">
           <button
